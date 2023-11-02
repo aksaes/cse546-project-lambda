@@ -22,7 +22,16 @@ def open_encoding(filename):
 
 def get_DBitem(item):
 	try:
-		response = table.get_item(Key={'name': match_name})
+		response = table.get_item(
+			Key={
+				'name': item
+			},
+			ProjectionExpression='#n, major, #yr',
+			ExpressionAttributeNames={
+				'#n': 'name',
+				'#yr': 'year'
+			}
+    	)
 		if 'Item' in response:
 			print('Item found:', response['Item'])
 			return response['Item']
@@ -61,5 +70,10 @@ def face_recognition_handler(event, context):
 
 	print(item)
 
+	# Output to S3
+	item_string = json.dumps(item)
 
-	
+	s3_output_key = key.split('/')[-1].split('.')[0]
+	s3.put_object(Bucket=output_bucket, Key=s3_output_key, Body=item_string)
+
+	print(f"Response has been uploaded to '{output_bucket}' as '{s3_output_key}'.")
