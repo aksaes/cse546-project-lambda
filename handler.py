@@ -46,7 +46,7 @@ def face_recognition_handler(event, context):
 	bucket = event['Records'][0]['s3']['bucket']['name']
 	key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
 	input_bucket = s3.Bucket(bucket)
-	obj = bucket.Object(key)
+	obj = input_bucket.Object(key)
 	obj.download_file(key)
 
 	# key = 'test_cases/test_case_1/test_1.mp4'
