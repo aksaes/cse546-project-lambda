@@ -4,6 +4,7 @@ import pickle
 import urllib
 import os
 import numpy as np
+import json
 
 input_bucket = "input-bucket-zxz"
 output_bucket = "output-bucket-zxz"
@@ -11,7 +12,7 @@ output_bucket = "output-bucket-zxz"
 s3 = boto3.resource('s3')
 dynamodb = boto3.resource('dynamodb')
 
-table = dynamodb.Table('StudentData')
+table = dynamodb.Table('Student-Data')
 
 # Function to read the 'encoding' file
 def open_encoding(filename):
@@ -74,6 +75,6 @@ def face_recognition_handler(event, context):
 	item_string = json.dumps(item)
 
 	s3_output_key = key.split('/')[-1].split('.')[0]
-	s3.put_object(Bucket=output_bucket, Key=s3_output_key, Body=item_string)
+	s3.Bucket(output_bucket).put_object(Key=s3_output_key, Body=item_string)
 
 	print(f"Response has been uploaded to '{output_bucket}' as '{s3_output_key}'.")
