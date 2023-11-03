@@ -64,6 +64,9 @@ COPY entry.sh /
 COPY handler.py ${FUNCTION_DIR}
 RUN chmod 777 /entry.sh
 
+# Copy encoding file
+COPY encoding ${FUNCTION_DIR}
+
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
 # CMD [ "handler.handler" ]
 ENTRYPOINT [ "/entry.sh" ]

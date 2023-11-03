@@ -37,7 +37,7 @@ def get_DBitem(item):
 			print('Item found:', response['Item'])
 			return response['Item']
 		else:
-			print('No item found with the primary key:', primary_key_value)
+			print('No item found with the primary key:', item)
 			return -1
 	except Exception as e:
 		print('Error fetching item from DynamoDB: ', e)
