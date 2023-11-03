@@ -48,14 +48,14 @@ def face_recognition_handler(event, context):
 	key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
 	input_bucket = s3.Bucket(bucket)
 	obj = input_bucket.Object(key)
-	obj.download_file(key)
+	obj.download_file('/tmp/' + key)
 
 	# key = 'test_cases/test_case_1/test_1.mp4'
 	# print('ffmpeg -i {} -r 1 {} -y'.format(key, key.split('.')[0] + '.jpeg'))
 	
-	os.system('ffmpeg -i {} -r 1 {} -y'.format(key, key.split('.')[0] + '.jpeg'))
+	os.system('ffmpeg -i {} -r 1 {} -y'.format('/tmp/' + key, '/tmp/' + key.split('.')[0] + '.jpeg'))
 
-	img = face_recognition.load_image_file(key.split('.')[0] + '.jpeg')
+	img = face_recognition.load_image_file('/tmp/' + key.split('.')[0] + '.jpeg')
 	face_encoding = face_recognition.face_encodings(img)[0]
 	
 	encodings = open_encoding('encoding')
