@@ -1,4 +1,4 @@
-from boto3 import client as boto3_client
+import boto3
 import face_recognition
 import pickle
 import urllib
@@ -8,7 +8,7 @@ import numpy as np
 input_bucket = "input-bucket-zxz"
 output_bucket = "output-bucket-zxz"
 
-s3 = boto3_client('s3')
+s3 = boto3.resource('s3')
 dynamodb = boto3.resource('dynamodb')
 
 table = dynamodb.Table('StudentData')
