@@ -4,7 +4,6 @@ import pickle
 import urllib
 import os
 import numpy as np
-import json
 
 input_bucket = "input-bucket-zxz"
 output_bucket = "output-bucket-zxz"
@@ -72,9 +71,9 @@ def face_recognition_handler(event, context):
 	print(item)
 
 	# Output to S3
-	item_string = json.dumps(item)
+	item_string = f"{item['name']}, {item['major']}, {item['year']}"
 
-	s3_output_key = key.split('/')[-1].split('.')[0]
+	s3_output_key = f"{key.split('/')[-1].split('.')[0]}.txt"
 	s3.Bucket(output_bucket).put_object(Key=s3_output_key, Body=item_string)
 
 	print(f"Response has been uploaded to '{output_bucket}' as '{s3_output_key}'.")
