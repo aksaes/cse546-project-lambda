@@ -5,7 +5,7 @@ Cyriac Biju Narayamparambil
 Aksa Elizabeth Sunny
 Saran Prasad
 
-Cloud Computing Project 2
+## Cloud Computing Project 2
 
 These are the instructions to run the project.
 
