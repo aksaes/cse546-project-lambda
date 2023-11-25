@@ -21,8 +21,9 @@ while True:
     new_len = len(objs)
 
     if new_len != curr_len:
-        curr_len = new_len
         new_obj_keys = [obj['Key'] for obj in sorted(objs, key = get_last_modified)][curr_len: new_len]
 
         for new_obj_key in new_obj_keys:
             trigger_lambda(input_bucket_name, new_obj_key)
+        
+        curr_len = new_len
