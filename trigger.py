@@ -1,4 +1,5 @@
 import boto3
+import requests
 
 boto3.setup_default_session(profile_name = 's3api')
 
@@ -14,7 +15,13 @@ get_last_modified = lambda obj: int(obj['LastModified'].strftime('%s'))
 
 def trigger_lambda(bucket, new_obj_key):
     print(bucket, new_obj_key)
+    openfaas_url = 'http://192.168.1.1/function/CSE546-PROJECT-LAMBDA'
+    payload = {
+        'bucket': bucket,
+        'key': new_obj_key
+    }
 
+    requests.post(url = openfaas_url, data = payload)
 
 while True:
     objs = list(s3.list_objects_v2(Bucket=input_bucket_name)['Contents'])
