@@ -1,8 +1,11 @@
 import boto3
 
+boto3.setup_default_session(profile_name = 's3api')
+
 input_bucket_name = 'input-bucket'
 output_bucket_name = 'output-bucket'
-s3 = boto3.client('s3')
+s3 = boto3.client('s3', endpoint_url = 'http://10.0.2.15:8081')
+
 curr_len = 0
 
 get_last_modified = lambda obj: int(obj['LastModified'].strftime('%s'))
