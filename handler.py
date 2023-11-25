@@ -42,9 +42,9 @@ def get_DBitem(item):
 		print('Error fetching item from DynamoDB: ', e)
 		return -1
 
-def face_recognition_handler(event, context):	
-	bucket = event['Records'][0]['s3']['bucket']['name']
-	key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
+def face_recognition_handler(bucket, key):	
+	# bucket = event['Records'][0]['s3']['bucket']['name']
+	# key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
 	input_bucket = s3.Bucket(bucket)
 	obj = input_bucket.Object(key)
 	obj.download_file('/tmp/' + key)
