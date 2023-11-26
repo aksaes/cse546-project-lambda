@@ -10,9 +10,21 @@ import json
 input_bucket = "input-bucket-zxz"
 output_bucket = "output-bucket-zxz"
 
-s3 = boto3.resource('s3')
 
-dynamodb = boto3.resource('dynamodb')
+s3 = boto3.resource(
+	service_name = 's3',
+	endpoint_url = 'http://10.0.2.15:8081',
+	aws_access_key_id = '',
+	aws_secret_access_key = ''
+	)
+
+dynamodb = boto3.resource(
+	service_name = 'dynamodb',
+	endpoint_url = 'http://10.0.2.15:8081',
+	aws_access_key_id = '',
+	aws_secret_access_key = ''
+	)
+
 table = dynamodb.Table('student_data')
 
 # def face_recognition_handler(req):

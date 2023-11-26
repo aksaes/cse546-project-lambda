@@ -5,7 +5,12 @@ boto3.setup_default_session(profile_name = 's3api')
 
 input_bucket_name = 'input-bucket'
 output_bucket_name = 'output-bucket'
-s3 = boto3.client('s3', endpoint_url = 'http://10.0.2.15:8081')
+
+s3 = boto3.client('s3',
+    endpoint_url = 'http://10.0.2.15:8081',
+    aws_access_key_id = '',
+	aws_secret_access_key = ''
+)
 
 curr_len = 0
 
