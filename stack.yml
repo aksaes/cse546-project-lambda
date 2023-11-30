@@ -1,0 +1,9 @@
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+
+functions:
+  face-recognition:
+    lang: dockerfile
+    handler: face-recognition
+    image: cyriacbijun/face-recognition:latest
