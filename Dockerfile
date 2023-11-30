@@ -67,6 +67,9 @@ RUN chmod 777 /entry.sh
 # Copy encoding file
 COPY encoding ${FUNCTION_DIR}
 
+# Copy credentials file
+COPY credentials ${FUNCTION_DIR}.aws/
+
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
 # CMD [ "handler.handler" ]
 ENTRYPOINT [ "/entry.sh" ]
