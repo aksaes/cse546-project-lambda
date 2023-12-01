@@ -34,7 +34,6 @@ def trigger_lambda(bucket, new_obj_key):
     print('After request post in trigger_lambda')
 
 while True:
-    print('Inside loop')
     objs = list(s3.list_objects_v2(Bucket=input_bucket_name)['Contents'])
     new_len = len(objs)
 
