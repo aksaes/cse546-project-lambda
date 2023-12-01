@@ -27,7 +27,7 @@ def trigger_lambda(bucket, new_obj_key):
         'key': new_obj_key
     }
 
-    requests.post(url = openfaas_url, data = payload)
+    requests.post(url = openfaas_url, data = payload, timeout = 0.1)
     print('After request post in trigger_lambda')
 
 while True:
