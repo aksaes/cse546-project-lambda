@@ -7,22 +7,19 @@ import numpy as np
 import urllib
 import json
 
-input_bucket = "input-bucket-zxz"
-output_bucket = "output-bucket-zxz"
+input_bucket = "input-bucket"
+output_bucket = "output-bucket"
 
-
-s3 = boto3.resource(
+s3_session = boto3.Session(profile_name='s3api')
+s3 = s3_session.resource(
 	service_name = 's3',
 	endpoint_url = 'http://10.0.2.15:8081',
-	aws_access_key_id = '',
-	aws_secret_access_key = ''
 	)
 
-dynamodb = boto3.resource(
+dynamodb_session = boto3.Session(profile_name='dynamodb')
+
+dynamodb = dynamodb_session.resource(
 	service_name = 'dynamodb',
-	endpoint_url = 'http://10.0.2.15:8081',
-	aws_access_key_id = '',
-	aws_secret_access_key = ''
 	)
 
 table = dynamodb.Table('student_data')

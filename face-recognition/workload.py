@@ -1,13 +1,16 @@
-from boto3 import client as boto3_client
+import boto3
 import os
 
-input_bucket = "input-bucket-zxz"
-output_bucket = "output-bucket-zxz"
+input_bucket = "input-bucket"
+output_bucket = "output-bucket"
 test_cases = "test_cases/"
+boto3.setup_default_session(profile_name = 's3api')
+s3 = boto3.client('s3',
+		endpoint_url = 'http://10.0.2.15:8081',
+	)
 
 def clear_input_bucket():
 	global input_bucket
-	s3 = boto3_client('s3')
 	list_obj = s3.list_objects_v2(Bucket=input_bucket)
 	try:
 		for item in list_obj["Contents"]:
@@ -18,7 +21,6 @@ def clear_input_bucket():
 	
 def clear_output_bucket():
 	global output_bucket
-	s3 = boto3_client('s3')
 	list_obj = s3.list_objects_v2(Bucket=output_bucket)
 	try:
 		for item in list_obj["Contents"]:
@@ -29,7 +31,6 @@ def clear_output_bucket():
 
 def upload_to_input_bucket_s3(path, name):
 	global input_bucket
-	s3 = boto3_client('s3')
 	s3.upload_file(path + name, input_bucket, name)
 	
 	
