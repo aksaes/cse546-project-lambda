@@ -8,8 +8,6 @@ output_bucket_name = 'output-bucket'
 
 s3 = boto3.client('s3',
     endpoint_url = 'http://10.0.2.15:8081',
-    aws_access_key_id = '',
-	aws_secret_access_key = ''
 )
 
 curr_len = 0
@@ -20,7 +18,7 @@ get_last_modified = lambda obj: int(obj['LastModified'].strftime('%s'))
 
 def trigger_lambda(bucket, new_obj_key):
     print(bucket, new_obj_key)
-    openfaas_url = 'http://192.168.1.1/function/CSE546-PROJECT-LAMBDA'
+    openfaas_url = 'http://localhost:31112/function/face-recognition'
     payload = {
         'bucket': bucket,
         'key': new_obj_key

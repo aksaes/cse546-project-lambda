@@ -18,7 +18,7 @@ get_last_modified = lambda obj: int(obj['LastModified'].strftime('%s'))
 
 def trigger_lambda(bucket, new_obj_key):
     print(bucket, new_obj_key)
-    openfaas_url = 'http://localhost:3112/function/face-recognition'
+    openfaas_url = 'http://localhost:31112/function/face-recognition'
     payload = {
         'bucket': bucket,
         'key': new_obj_key
