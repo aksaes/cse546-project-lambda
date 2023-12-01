@@ -3,6 +3,8 @@ import requests
 
 boto3.setup_default_session(profile_name = 's3api')
 
+print('Trigger started')
+
 input_bucket_name = 'input-bucket'
 output_bucket_name = 'output-bucket'
 
@@ -17,6 +19,7 @@ get_last_modified = lambda obj: int(obj['LastModified'].strftime('%s'))
 
 
 def trigger_lambda(bucket, new_obj_key):
+    print('In trigger_lambda')
     print(bucket, new_obj_key)
     openfaas_url = 'http://localhost:31112/function/face-recognition'
     payload = {
@@ -25,8 +28,10 @@ def trigger_lambda(bucket, new_obj_key):
     }
 
     requests.post(url = openfaas_url, data = payload)
+    print('After request post in trigger_lambda')
 
 while True:
+    print('Inside loop')
     objs = list(s3.list_objects_v2(Bucket=input_bucket_name)['Contents'])
     new_len = len(objs)
 
