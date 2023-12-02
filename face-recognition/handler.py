@@ -108,7 +108,6 @@ def get_DBitem(item):
 		return -1
 
 def face_recognition_handler(event, context):
-	raise Exception('test')
 	print('Starting face_recognition_handler')
 	# bucket = event['Records'][0]['s3']['bucket']['name']
 	# key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
@@ -126,6 +125,7 @@ def face_recognition_handler(event, context):
 	# print('ffmpeg -i {} -r 1 {} -y'.format(key, key.split('.')[0] + '.jpeg'))
 	
 	os.system('ffmpeg -i {} -r 1 {} -y'.format('/tmp/' + key, '/tmp/' + key.split('.')[0] + '.jpeg'))
+	raise Exception('test1')
 
 	print('Starting image recognition')
 	img = face_recognition.load_image_file('/tmp/' + key.split('.')[0] + '.jpeg')
@@ -133,12 +133,14 @@ def face_recognition_handler(event, context):
 	
 	encodings = open_encoding('encoding')
 	scores = face_recognition.api.face_distance(encodings['encoding'], face_encoding)
+	raise Exception('test2')
 	match_idx = np.argmin(scores)
 	match_name = encodings['name'][match_idx]
 	print('Finished face recognition')
 	print('Get record from DB')
 	# Fetch record from DB
 	item = get_DBitem(match_name)
+	raise Exception('test3')
 	print('Got record from DB')
 	if item == -1:
 		print('Some error fetching record from DB')
@@ -152,6 +154,7 @@ def face_recognition_handler(event, context):
 	s3_output_key = f"{key.split('/')[-1].split('.')[0]}.txt"
 	print('Uploading to S3')
 	s3.Bucket(output_bucket).put_object(Key=s3_output_key, Body=item_string)
+	raise Exception('test4')
 	print('Uploaded to S3')
 	print(f"Response has been uploaded to '{output_bucket}' as '{s3_output_key}'.")
 	raise Exception('test')
