@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from waitress import serve
 import os
 
-from function import handler
+import handler
 
 app = Flask(__name__)
 
@@ -72,7 +72,7 @@ def call_handler(path):
     event = Event()
     context = Context()
 
-    response_data = handler.handle(event, context)
+    response_data = handler.face_recognition_handler(event, context)
     
     res = format_response(response_data)
     return res
