@@ -56,6 +56,12 @@ USER app
 
 #RUN apt-get install -y ffmpeg
 
+# Copy encoding file
+COPY encoding ${FUNCTION_DIR}
+
+# Copy credentials file
+COPY credentials ${FUNCTION_DIR}.aws/
+
 # Set up of-watchdog for HTTP mode
 ENV fprocess="python index.py"
 ENV cgi_headers="true"
