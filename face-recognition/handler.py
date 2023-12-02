@@ -130,6 +130,7 @@ def face_recognition_handler(event, context):
 	print('Starting image recognition')
 	img = face_recognition.load_image_file('/tmp/' + key.split('.')[0] + '.jpeg')
 	face_encoding = face_recognition.face_encodings(img)[0]
+	raise Exception('testFace_Encodings')
 	
 	encodings = open_encoding('encoding')
 	scores = face_recognition.api.face_distance(encodings['encoding'], face_encoding)
