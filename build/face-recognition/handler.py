@@ -7,6 +7,7 @@ import numpy as np
 import urllib
 import json
 
+print('handler start')
 input_bucket = "input-bucket"
 output_bucket = "output-bucket"
 
@@ -106,20 +107,27 @@ def get_DBitem(item):
 		print('Error fetching item from DynamoDB: ', e)
 		return -1
 
-def face_recognition_handler(req):	
+def face_recognition_handler(event, context):
+	print('Starting face_recognition_handler')
 	# bucket = event['Records'][0]['s3']['bucket']['name']
 	# key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
-	req = json.loads(req)
+	str_data = event.body.decode('utf8').replace("'", '"')
+	parsed_data = urllib.parse.parse_qs(str_data)
+	req = {key: value[0] for key, value in parsed_data.items()}
+	# print(req)
 	bucket, key = (req['bucket'], req['key'])
 	input_bucket = s3.Bucket(bucket)
 	obj = input_bucket.Object(key)
+	print('Starting file download from ceph')
 	obj.download_file('/tmp/' + key)
-
+	print('Finished file download from ceph')
 	# key = 'test_cases/test_case_1/test_1.mp4'
 	# print('ffmpeg -i {} -r 1 {} -y'.format(key, key.split('.')[0] + '.jpeg'))
 	
 	os.system('ffmpeg -i {} -r 1 {} -y'.format('/tmp/' + key, '/tmp/' + key.split('.')[0] + '.jpeg'))
+	# raise Exception('test1')
 
+	print('Starting image recognition')
 	img = face_recognition.load_image_file('/tmp/' + key.split('.')[0] + '.jpeg')
 	face_encoding = face_recognition.face_encodings(img)[0]
 	
@@ -127,11 +135,13 @@ def face_recognition_handler(req):
 	scores = face_recognition.api.face_distance(encodings['encoding'], face_encoding)
 	match_idx = np.argmin(scores)
 	match_name = encodings['name'][match_idx]
-
+	print('Finished face recognition')
+	print('Get record from DB')
 	# Fetch record from DB
 	item = get_DBitem(match_name)
-
+	print('Got record from DB')
 	if item == -1:
+		print('Some error fetching record from DB')
 		return
 
 	print(item)
@@ -140,6 +150,7 @@ def face_recognition_handler(req):
 	item_string = f"{item['name']}, {item['major']}, {item['year']}"
 
 	s3_output_key = f"{key.split('/')[-1].split('.')[0]}.txt"
+	print('Uploading to S3')
 	s3.Bucket(output_bucket).put_object(Key=s3_output_key, Body=item_string)
-
+	print('Uploaded to S3')
 	print(f"Response has been uploaded to '{output_bucket}' as '{s3_output_key}'.")

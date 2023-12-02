@@ -4,3 +4,6 @@ numpy
 face_recognition
 opencv-python
 ffmpeg
+flask
+waitress
+tox==3.*
