@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 class Event:
     def __init__(self):
-        self.body = request.get_json()
+        self.body = request.get_data()
         # self.headers = request.headers
         # self.method = request.method
         # self.query = request.args
@@ -69,7 +69,7 @@ def format_response(res):
 @app.route('/', defaults={'path': ''}, methods=['GET', 'PUT', 'POST', 'PATCH', 'DELETE'])
 @app.route('/<path:path>', methods=['GET', 'PUT', 'POST', 'PATCH', 'DELETE'])
 def call_handler(path):
-    print(request.json)
+    # print(request.json)
     event = Event()
     context = Context()
 
@@ -79,5 +79,5 @@ def call_handler(path):
     # return res
 
 if __name__ == '__main__':
-    # serve(app, host='0.0.0.0', port=5000, debug = True)
-    app.run(host = '0.0.0.0', port = 5000)
+    serve(app, host='0.0.0.0', port=5000)
+    # app.run(host = '0.0.0.0', port = 5000)
