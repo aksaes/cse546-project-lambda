@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 class Event:
     def __init__(self):
-        self.body = request.get_json()
+        self.body = request.get_data()
         # self.headers = request.headers
         # self.method = request.method
         # self.query = request.args
