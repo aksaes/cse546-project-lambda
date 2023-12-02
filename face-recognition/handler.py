@@ -153,3 +153,4 @@ def face_recognition_handler(event, context):
 	s3.Bucket(output_bucket).put_object(Key=s3_output_key, Body=item_string)
 	print('Uploaded to S3')
 	print(f"Response has been uploaded to '{output_bucket}' as '{s3_output_key}'.")
+	raise Exception('test')
