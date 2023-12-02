@@ -10,10 +10,10 @@ app = Flask(__name__)
 class Event:
     def __init__(self):
         self.body = request.json
-        self.headers = request.headers
-        self.method = request.method
-        self.query = request.args
-        self.path = request.path
+        # self.headers = request.headers
+        # self.method = request.method
+        # self.query = request.args
+        # self.path = request.path
 
 class Context:
     def __init__(self):
