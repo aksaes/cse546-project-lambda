@@ -111,7 +111,8 @@ def face_recognition_handler(event, context):
 	print('Starting face_recognition_handler')
 	# bucket = event['Records'][0]['s3']['bucket']['name']
 	# key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding = 'utf-8')
-	req = event.body
+	my_json = event_body.decode('utf8').replace("'", '"')
+	req = json.loads(my_json)
 	bucket, key = (req['bucket'], req['key'])
 	input_bucket = s3.Bucket(bucket)
 	obj = input_bucket.Object(key)
