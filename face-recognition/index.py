@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 class Event:
     def __init__(self):
-        self.body = request.get_data()
+        self.body = request.get_json()
         # self.headers = request.headers
         # self.method = request.method
         # self.query = request.args
@@ -69,15 +69,14 @@ def format_response(res):
 @app.route('/', defaults={'path': ''}, methods=['GET', 'PUT', 'POST', 'PATCH', 'DELETE'])
 @app.route('/<path:path>', methods=['GET', 'PUT', 'POST', 'PATCH', 'DELETE'])
 def call_handler(path):
-    print('Hello1')
+    print(request.json)
     event = Event()
-    print('Hello2')
     context = Context()
-    print('Hello3')
+
     handler.face_recognition_handler(event, context)
     
     # res = format_response(response_data)
     # return res
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
+    serve(app, host='0.0.0.0', port=5000, debug = True)
