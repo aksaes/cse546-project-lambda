@@ -17,7 +17,7 @@ RUN addgroup --system app && adduser app --system --ingroup app
 RUN chown app /home/app
 
 RUN apt-get update \
-    && apt-get install -y cmake ca-certificates libgl1-mesa-glx build-essential
+    && apt-get install -y cmake ca-certificates libgl1-mesa-glx build-essential ffmpeg
     
 RUN python${RUNTIME_VERSION} -m pip install --upgrade pip
 
@@ -54,7 +54,7 @@ WORKDIR /home/app/
 
 USER app
 
-RUN apt-get install -y ffmpeg
+#RUN apt-get install -y ffmpeg
 
 # Set up of-watchdog for HTTP mode
 ENV fprocess="python index.py"
