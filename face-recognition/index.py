@@ -72,10 +72,10 @@ def call_handler(path):
     event = Event()
     context = Context()
 
-    response_data = handler.face_recognition_handler(event, context)
+    handler.face_recognition_handler(event, context)
     
-    res = format_response(response_data)
-    return res
+    # res = format_response(response_data)
+    # return res
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
