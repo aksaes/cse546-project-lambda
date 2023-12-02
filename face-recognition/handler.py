@@ -125,7 +125,7 @@ def face_recognition_handler(event, context):
 	# print('ffmpeg -i {} -r 1 {} -y'.format(key, key.split('.')[0] + '.jpeg'))
 	
 	os.system('ffmpeg -i {} -r 1 {} -y'.format('/tmp/' + key, '/tmp/' + key.split('.')[0] + '.jpeg'))
-	raise Exception('test1')
+	# raise Exception('test1')
 
 	print('Starting image recognition')
 	img = face_recognition.load_image_file('/tmp/' + key.split('.')[0] + '.jpeg')
