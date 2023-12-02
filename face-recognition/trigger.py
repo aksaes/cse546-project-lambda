@@ -28,7 +28,8 @@ def trigger_lambda(bucket, new_obj_key):
     }
 
     try:
-        requests.post(url = openfaas_url, data = payload, timeout = 0.1)
+        headers = { 'Content-Type': 'application/json' }
+        requests.post(url = openfaas_url, data = payload, timeout = 0.1, headers = headers)
     except:
         pass
     print('After request post in trigger_lambda')
