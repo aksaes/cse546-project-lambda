@@ -7,7 +7,7 @@ Aksa Elizabeth Sunny
 
 Saran Prasad
 
-## Cloud Computing Project 2
+## Cloud Computing Project 3
 
 These are the instructions to run the project.
 
