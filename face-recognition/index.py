@@ -69,9 +69,11 @@ def format_response(res):
 @app.route('/', defaults={'path': ''}, methods=['GET', 'PUT', 'POST', 'PATCH', 'DELETE'])
 @app.route('/<path:path>', methods=['GET', 'PUT', 'POST', 'PATCH', 'DELETE'])
 def call_handler(path):
+    print('Hello1')
     event = Event()
+    print('Hello2')
     context = Context()
-
+    print('Hello3')
     handler.face_recognition_handler(event, context)
     
     # res = format_response(response_data)
