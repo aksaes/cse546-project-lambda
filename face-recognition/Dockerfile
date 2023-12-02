@@ -29,13 +29,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 USER app
 
 RUN mkdir -p function
-RUN touch ./function/__init__.py
-WORKDIR /home/app/function/
-COPY --chown=app:app function/requirements.txt	.
+RUN touch __init__.py
+WORKDIR /home/app/
+COPY --chown=app:app requirements.txt	.
 RUN pip install --no-cache-dir --user -r requirements.txt
 
 USER root
-COPY --chown=app:app function/   .
+COPY --chown=app:app ./   .
 
 FROM build as test
 
