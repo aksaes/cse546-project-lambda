@@ -16,10 +16,9 @@ RUN apt-get -qy update \
 RUN addgroup --system app && adduser app --system --ingroup app
 RUN chown app /home/app
 
-RUN apt-get install build-essential
-
 RUN apt-get update \
-    && apt-get install -y cmake ca-certificates libgl1-mesa-glx
+    && apt-get install -y cmake ca-certificates libgl1-mesa-glx build-essential
+    
 RUN python${RUNTIME_VERSION} -m pip install --upgrade pip
 
 USER app
