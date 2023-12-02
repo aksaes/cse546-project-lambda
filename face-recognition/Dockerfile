@@ -1,76 +1,62 @@
-# Define global args
-# ARG FUNCTION_DIR="/tmp/"
-# ARG FUNCTION_DIR=${LAMBDA_TASK_ROOT}
-ARG FUNCTION_DIR="/home/app/"
-ARG RUNTIME_VERSION="3.8"
-ARG DISTRO_VERSION="3.12"
+ARG PYTHON_VERSION=3.11
+FROM --platform=${TARGETPLATFORM:-linux/amd64} ghcr.io/openfaas/of-watchdog:0.9.10 as watchdog
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:${PYTHON_VERSION}-slim-buster as build
 
-# Stage 1 - bundle base image + runtime
-# Grab a fresh copy of the image and install GCC
-FROM python:${RUNTIME_VERSION} AS python-alpine
-# Install GCC (Alpine uses musl but we compile and link dependencies with GCC)
-#RUN apk add --no-cache \
-#    libstdc++
+COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
+RUN chmod +x /usr/bin/fwatchdog
 
-RUN apt-get update \
-    && apt-get install -y cmake ca-certificates libgl1-mesa-glx
-RUN python${RUNTIME_VERSION} -m pip install --upgrade pip
+ARG ADDITIONAL_PACKAGE
+# Alternatively use ADD https:// (which will not be cached by Docker builder)
 
-# Stage 2 - build function and dependencies
-FROM python-alpine AS build-image
-# Install aws-lambda-cpp build dependencies
-#RUN apk add --no-cache \
-#    build-base \
-#    libtool \
-#    autoconf \
-#    automake \
-#    libexecinfo-dev \
-#    make \
-#    cmake \
-#    libcurl
-# Include global args in this stage of the build
-ARG FUNCTION_DIR
-ARG RUNTIME_VERSION
-# Create function directory
-RUN mkdir -p ${FUNCTION_DIR}
+RUN apt-get -qy update \
+    && apt-get -qy install ${ADDITIONAL_PACKAGE} \
+    && rm -rf /var/lib/apt/lists/*
 
-# Optional – Install the function's dependencies
-# RUN python${RUNTIME_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
-# Install Lambda Runtime Interface Client for Python
-RUN python${RUNTIME_VERSION} -m pip install awslambdaric --target ${FUNCTION_DIR}
+# Add non root user
+RUN addgroup --system app && adduser app --system --ingroup app
+RUN chown app /home/app
 
-# Stage 3 - final runtime image
-# Grab a fresh copy of the Python image
-FROM python-alpine
-# Include global arg in this stage of the build
-ARG FUNCTION_DIR
-# Set working directory to function root directory
-WORKDIR ${FUNCTION_DIR}
-# Copy in the built dependencies
-COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
-# (Optional) Add Lambda Runtime Interface Emulator and use a script in the ENTRYPOINT for simpler local runs
-ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/bin/aws-lambda-rie
-RUN chmod 755 /usr/bin/aws-lambda-rie
+USER app
 
-# Install ffmpeg
+ENV PATH=$PATH:/home/app/.local/bin
+
+WORKDIR /home/app/
+
+COPY --chown=app:app index.py           .
+COPY --chown=app:app requirements.txt   .
+USER root
+RUN pip install --no-cache-dir -r requirements.txt
+USER app
+
+RUN mkdir -p function
+RUN touch ./function/__init__.py
+WORKDIR /home/app/function/
+COPY --chown=app:app function/requirements.txt	.
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+USER root
+COPY --chown=app:app function/   .
+
+FROM build as test
+
+ARG TEST_COMMAND=tox
+ARG TEST_ENABLED=true
+RUN [ "$TEST_ENABLED" = "false" ] && echo "skipping tests" || eval "$TEST_COMMAND"
+
+
+FROM build as ship
+WORKDIR /home/app/
+
+USER app
+
 RUN apt-get install -y ffmpeg
 
-# Copy handler function
-COPY requirements.txt ${FUNCTION_DIR}
-RUN python${RUNTIME_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
-COPY entry.sh /
+# Set up of-watchdog for HTTP mode
+ENV fprocess="python index.py"
+ENV cgi_headers="true"
+ENV mode="http"
+ENV upstream_url="http://127.0.0.1:5000"
 
-# Copy function code
-COPY handler.py ${FUNCTION_DIR}
-RUN chmod 777 /entry.sh
+HEALTHCHECK --interval=5s CMD [ -e /tmp/.lock ] || exit 1
 
-# Copy encoding file
-COPY encoding ${FUNCTION_DIR}
-
-# Copy credentials file
-COPY credentials ${FUNCTION_DIR}.aws/
-
-# Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
-# CMD [ "handler.handler" ]
-ENTRYPOINT [ "/entry.sh" ]
-CMD [ "handler.face_recognition_handler" ]
+CMD ["fwatchdog"]
