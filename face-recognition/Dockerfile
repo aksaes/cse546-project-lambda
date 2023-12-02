@@ -16,6 +16,10 @@ RUN apt-get -qy update \
 RUN addgroup --system app && adduser app --system --ingroup app
 RUN chown app /home/app
 
+RUN apt-get update \
+    && apt-get install -y cmake ca-certificates libgl1-mesa-glx
+RUN python${RUNTIME_VERSION} -m pip install --upgrade pip
+
 USER app
 
 ENV PATH=$PATH:/home/app/.local/bin
